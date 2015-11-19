@@ -22,5 +22,9 @@ namespace EverFresh_API
     public class GetMemberRequest
     {
     }
+    [Route("/member/getall")]
+    public class GetAllMembersRequest
+    {
+    }
 
 }

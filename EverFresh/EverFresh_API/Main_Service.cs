@@ -1,5 +1,7 @@
 ﻿using ServiceStack;
 using EverFresh.Model;
+using System.Collections;
+using System.Collections.Generic;
 
 namespace EverFresh_API
 {
@@ -20,7 +22,12 @@ namespace EverFresh_API
             MemberModel mm = MemberModel.GetMember(token);
             return mm;
         }
+        public List<MemberModel> Get(GetAllMembersRequest req)
+        {
+            var token = base.Request.Headers["Authorization"];
 
+            return MemberModel.GetAllMembers(true);
+        }
 
 
 

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Configuration;
 using System.Data;
-using System.Data.SqlClient;
+using MySql.Data.MySqlClient;
 
 namespace EverFresh
 {
@@ -30,33 +30,33 @@ namespace EverFresh
         {
             _sqlconn = conn;
         }
-
-        public DataTable GetDataTable(params SqlParameter[] param)
+        
+        public DataTable GetDataTable(params MySqlParameter[] param)
         {
             return GetDataTable(CommandType.Text, param);
         }
 
-        public DataTable GetDataTable(CommandType type, params SqlParameter[] param)
+        public DataTable GetDataTable(CommandType type, params MySqlParameter[] param)
         {
             DataTable dt = new DataTable();
             GetDataTable(dt, type, param);
             return dt;
         }
 
-        public void GetDataTable(DataTable dt, params SqlParameter[] param)
+        public void GetDataTable(DataTable dt, params MySqlParameter[] param)
         {
             GetDataTable(dt, CommandType.Text, param);
         }
 
-        public void GetDataTable(DataTable dt, CommandType type, params SqlParameter[] param)
+        public void GetDataTable(DataTable dt, CommandType type, params MySqlParameter[] param)
         {
-            SqlConnection connection = new SqlConnection(_sqlconn);
-            SqlDataAdapter adpter = new SqlDataAdapter(_sqlcomm, connection);
+            MySqlConnection connection = new MySqlConnection(_sqlconn);
+            MySqlDataAdapter adpter = new MySqlDataAdapter(_sqlcomm, connection);
             adpter.SelectCommand.CommandType = type;
             adpter.SelectCommand.CommandTimeout = 300;
             if (param != null)
             {
-                foreach (SqlParameter item in param)
+                foreach (MySqlParameter item in param)
                 {
                     adpter.SelectCommand.Parameters.Add(item);
                 }
@@ -84,7 +84,7 @@ namespace EverFresh
             return GetFilteredDataTable(filter, null);
         }
 
-        public DataTable GetFilteredDataTable(string filter, params SqlParameter[] param)
+        public DataTable GetFilteredDataTable(string filter, params MySqlParameter[] param)
         {
             BuildSqlCommand(filter);
             return GetDataTable(param);
@@ -95,7 +95,7 @@ namespace EverFresh
             GetFilteredDataTable(dt, filter, null);
         }
 
-        public void GetFilteredDataTable(DataTable dt, string filter, params SqlParameter[] param)
+        public void GetFilteredDataTable(DataTable dt, string filter, params MySqlParameter[] param)
         {
             BuildSqlCommand(filter);
             GetDataTable(dt, param);
@@ -104,25 +104,25 @@ namespace EverFresh
 
         public void GetSchema(DataTable dt)
         {
-            SqlConnection connection = new SqlConnection(_sqlconn);
-            SqlDataAdapter adpter = new SqlDataAdapter(_sqlcomm, connection);
+            MySqlConnection connection = new MySqlConnection(_sqlconn);
+            MySqlDataAdapter adpter = new MySqlDataAdapter(_sqlcomm, connection);
             adpter.FillSchema(dt, SchemaType.Source);
         }
 
-        public int ExecuteNonQuery(params SqlParameter[] param)
+        public int ExecuteNonQuery(params MySqlParameter[] param)
         {
             return ExecuteNonQuery(CommandType.Text, param);
         }
 
-        public int ExecuteNonQuery(CommandType type, params SqlParameter[] param)
+        public int ExecuteNonQuery(CommandType type, params MySqlParameter[] param)
         {
             int i = 0;
-            SqlConnection connection = new SqlConnection(_sqlconn);
-            SqlCommand command = new SqlCommand(_sqlcomm, connection);
+            MySqlConnection connection = new MySqlConnection(_sqlconn);
+            MySqlCommand command = new MySqlCommand(_sqlcomm, connection);
             command.CommandType = type;
             if (param != null)
             {
-                foreach (SqlParameter item in param)
+                foreach (MySqlParameter item in param)
                 {
                     command.Parameters.Add(item);
                 }
@@ -137,23 +137,23 @@ namespace EverFresh
         public int Update(DataTable dt)
         {
             int i = 0;
-            SqlConnection connection = new SqlConnection(_sqlconn);
-            SqlDataAdapter adapter = new SqlDataAdapter(_sqlcomm, connection);
-            SqlCommandBuilder builder = new SqlCommandBuilder(adapter);
+            MySqlConnection connection = new MySqlConnection(_sqlconn);
+            MySqlDataAdapter adapter = new MySqlDataAdapter(_sqlcomm, connection);
+            MySqlCommandBuilder builder = new MySqlCommandBuilder(adapter);
             builder.QuotePrefix = "[";
             builder.QuoteSuffix = "]";
             i = adapter.Update(dt);
             return i;
         }
 
-        public object GetObject(params SqlParameter[] param)
+        public object GetObject(params MySqlParameter[] param)
         {
             object obj;
-            SqlConnection connection = new SqlConnection(_sqlconn);
-            SqlCommand command = new SqlCommand(_sqlcomm, connection);
+            MySqlConnection connection = new MySqlConnection(_sqlconn);
+            MySqlCommand command = new MySqlCommand(_sqlcomm, connection);
             if (param != null)
             {
-                foreach (SqlParameter item in param)
+                foreach (MySqlParameter item in param)
                 {
                     command.Parameters.Add(item);
                 }

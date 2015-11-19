@@ -4,6 +4,7 @@ using System.Linq;
 using System.Web;
 using System.Data;
 using System.Security.Authentication;
+using MySql.Data.MySqlClient;
 
 namespace EverFresh.Model
 {
@@ -17,6 +18,21 @@ namespace EverFresh.Model
 
         public MemberModel() { }
 
+        public static List<MemberModel> GetAllMembers(bool include_disabled)
+        {
+            List<MemberModel> members = new List<MemberModel>();
+            SqlDataObject dbo = new SqlDataObject();
+            dbo.SqlComm = "select * from t_member";
+            DataTable dt = dbo.GetDataTable();
+            foreach(DataRow dr in dt.Rows)
+            {
+                var member = new MemberModel();
+                member.cellphone = dr["cellphone"].ToString();
+                member.email = dr["email"].ToString();
+                members.Add(member);
+            }
+            return members;
+        }
         public static MemberModel GetMember(int member_id)
         {
             return new MemberModel();
@@ -42,7 +58,7 @@ namespace EverFresh.Model
         {
             SqlDataObject dbo = new SqlDataObject();
             dbo.SqlComm = "select * from t_member where cellphone = @cellphone";
-            DataTable dt = dbo.GetDataTable(new System.Data.SqlClient.SqlParameter("@cellphone", email));
+            DataTable dt = dbo.GetDataTable(new MySqlParameter("@cellphone", email));
             if (dt.Rows.Count == 0)
                 return null;//没找到
             DataRow dr = dt.Rows[0];
