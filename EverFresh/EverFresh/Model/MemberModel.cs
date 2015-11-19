@@ -15,8 +15,21 @@ namespace EverFresh.Model
         public string enc_password { get; set; }
         public string email { get; set; }
         public string cellphone { get; set; }
+        public string token { get; set; }
 
         public MemberModel() { }
+        public MemberModel(int member_id)
+        {
+            SqlDataObject dbo = new SqlDataObject();
+            dbo.SqlComm = "select * from t_member where member_id = @member_id";
+            DataTable dt = dbo.GetDataTable(new MySqlParameter("@member_id", member_id));
+            if (dt.Rows.Count == 0)
+                throw new Exception("Can't find member with member_id:" + member_id.ToString());
+            //member
+            DataRow dr = dt.Rows[0];
+            this.email = dr["email"].ToString();
+            this.cellphone = dr["cellphone"].ToString();
+        }
 
         public static List<MemberModel> GetAllMembers(bool include_disabled)
         {
@@ -35,7 +48,7 @@ namespace EverFresh.Model
         }
         public static MemberModel GetMember(int member_id)
         {
-            return new MemberModel();
+            return new MemberModel(member_id);
         }
         public static MemberModel GetMember(string token)
         {
