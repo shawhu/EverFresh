@@ -63,7 +63,7 @@ namespace EverFresh.Model
             dt.Rows.Add(dr);
             dr["email"] = email;
             dr["cellphone"] = cellphone;
-            dr["password"] = Common.Encrypt(password);
+            dr["enc_password"] = Common.Encrypt(password);
             dbo.Update(dt);
             return true;
         }

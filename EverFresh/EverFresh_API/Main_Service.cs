@@ -1,7 +1,7 @@
 ﻿using ServiceStack;
 using EverFresh.Model;
-using System.Collections;
 using System.Collections.Generic;
+using System;
 
 namespace EverFresh_API
 {
@@ -11,7 +11,10 @@ namespace EverFresh_API
         //Sign Up, Register,注册
         public string Post(SignUpRequest req)
         {
-            return "OK";
+            if (MemberModel.SignUp(req.email, req.cellphone, req.password))
+                return "";
+            else
+                throw new ArgumentException("Signing up failed.");
         }
         //Sign In, Login, 登录
         public MemberModel Post(SignInRequest req)

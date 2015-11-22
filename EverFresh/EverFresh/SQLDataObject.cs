@@ -140,8 +140,8 @@ namespace EverFresh
             MySqlConnection connection = new MySqlConnection(_sqlconn);
             MySqlDataAdapter adapter = new MySqlDataAdapter(_sqlcomm, connection);
             MySqlCommandBuilder builder = new MySqlCommandBuilder(adapter);
-            builder.QuotePrefix = "[";
-            builder.QuoteSuffix = "]";
+            //builder.QuotePrefix = "[";
+            //builder.QuoteSuffix = "]";
             i = adapter.Update(dt);
             return i;
         }
