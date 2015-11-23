@@ -27,9 +27,37 @@ namespace EverFresh.Model
                 throw new Exception("Can't find member with member_id:" + member_id.ToString());
             //member
             DataRow dr = dt.Rows[0];
+            this.member_id = (int)dr["member_id"];
             this.email = dr["email"].ToString();
             this.cellphone = dr["cellphone"].ToString();
         }
+
+        public static MemberModel Login(string email, string cellphone, string plain_password)
+        {
+            SqlDataObject dbo = new SqlDataObject();
+            dbo.SqlComm = "select * from t_member where email=@email or cellphone=@cellphone";
+            DataTable dt = dbo.GetDataTable(new MySqlParameter("@email", email), new MySqlParameter("@cellphone", cellphone));
+            if (dt.Rows.Count == 0)
+                throw new AuthenticationException("用户没有找到");
+            DataRow dr = dt.Rows[0];
+            var enc_password = dr["enc_password"].ToString();
+            if (Common.PasswordCompare(enc_password,plain_password))
+            {
+                //password is good
+                MemberModel mm = MemberModel.GetMember((int)dr["member_id"]);
+                //put to onlineuser
+                var token = Guid.NewGuid().ToString();
+                NoSqlDataObject.AddOnlineUser(mm.member_id, token);
+                mm.token = token;
+                return mm;
+            }
+            else
+            {
+                throw new AuthenticationException("密码错误");
+            }
+        }
+
+
 
         public static List<MemberModel> GetAllMembers(bool include_disabled)
         {
@@ -52,7 +80,10 @@ namespace EverFresh.Model
         }
         public static MemberModel GetMember(string token)
         {
-            return new MemberModel();
+            var member_id = NoSqlDataObject.IsTokenValid(token);
+            var member = new MemberModel(member_id);
+            member.token = token;
+            return member;
         }
         public static bool SignUp(string email, string cellphone, string password)
         {

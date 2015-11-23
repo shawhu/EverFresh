@@ -19,7 +19,8 @@ namespace EverFresh_API
         //Sign In, Login, 登录
         public MemberModel Post(SignInRequest req)
         {
-            return new MemberModel();
+            var mm = MemberModel.Login(req.email, req.cellphone, req.password);
+            return mm;
         }
         //获取member信息
         public MemberModel Get(GetMemberRequest req)
